@@ -1,0 +1,2 @@
+备份交换机已保存的启动配置文件
+copy flash:/vrpcfg.zip flash:/cfgbackup/zip
