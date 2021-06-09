@@ -1,0 +1,25 @@
+STP 802.1D 标准是所有VLAN共用一棵生成树，不管交换网络中存在多少个VLAN，STP计算的结果都是一棵生成树。
+
+perVALN生成树协议，一个VLAN一棵生成树，每个VLAN都有其自己独立的生成树，基于不同的VLAN，可以进行不同的优先级、接口开销的配置从而实现阻塞不同的端口。实现不同的VLAN流量分流的目的。
+弊端是网络中的交换机需要为每一个VLAN单独进行生成树计算，当VLAN数量较多时，生成树的数量也非常多，网络每一次震荡都将触发交换机们的重新计算，相当耗资源。
+
+MSTP（Multiple Spanning Tree Protocol）多生成树协议，是IEEE 802.1S标准，通过将多个VLAN映射到一个生成树实例（Instance)，从而基于实例来计算生成树，
+同属于一个实例的VLAN享有同一棵生成树，不同的实例对应不同的生成树，这样既可实现数据分流，又能够极大程度的减小交换机的计算负担。
+
+MST Region(Multiple Spanning Tree Region）：一个域包含域名（Configuration Name）、修订级别（Revision Level）、格式选择器（Configuration Identifier Format Selector）、
+Vlan与实例的映射关系（mapping of VIDs to spanning trees)等信息。只有上述四者都一样且相互连接的交换机才认为在同一个域内。
+
+MSTI（Multiple Spanning Tree Instance）：MSTP的非实例0的其他实例。
+
+CST（Common Spanning Tree）公共生成树：是连接交换网络内所有MST域的一棵生成树。如果把每个MST域看作是一个节点，CST就是这些节点通过STP或RSTP协议计算生成的一棵生成树。
+
+IST（Internal Spanning Tree）内部生成树：是各MST域内的一棵生成树。IST是一个特殊的MSTI，MSTI的ID为0，通常称为MSTI0.IST是CIST在MST域内的一个片段。
+
+CIST（Common Internal Spanning Tree）公共内部生成树：连接一个交换网络内所有交换设备的单生成树。所有MST域的IST加上CST就构成一棵完事的生成树，即CIST.
+
+CIST Root 总根：总根是一个全局概念，对于所有互连的运行STP/RSTP/MSTP的交换机只能有一个总根，也即是CIST的根。
+
+域根（Regional Root）：分为IST域根和MSTI域根。
+
+同一个域内所有交换机都有相同的MST域配置。缺省时，域名就是交换机的桥MAC地址，修订级别等于0，格式选择器等于0，所有的VLAN都映射到实例0上。
+同一个域内的交换机，VLAN的映射必须完全一致。
