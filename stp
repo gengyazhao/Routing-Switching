@@ -9,3 +9,67 @@ STP采用四个步骤来解决二层环路问题：
 3、在每个段中选举一个指定端口（Designated Port,简称DP)
 4、阻塞非指定端口（Non-Designated Port,简称NDP）
 
+BPDU网桥协议数据单元（Bridge Protocol Data Unit),重点字段包括：根桥ID > 到根的路径开销 > 桥ID > 端口ID(比较次序，值越小越优)
+
+桥ID，在STP中，交换机的标识符。默认优先级为32768，可以手工更改。
+
+端口ID缺省优先级128，可以通过命令修改，取值范围是0-255，值越小越优。
+
+生成树构造一个无环路拓扑时，总是使用相同的4步来判定：
+1、最小的根桥ID
+2、最小的根路径开销
+3、最小的桥ID
+4、最小的端口ID
+
+根桥的选举过程：首先比较桥优先级，优先级值最小的交换机胜出，如果优先级相等，则再比较桥MAC地址，也是优选最小的值。
+（在实际的项目中，为了网络的稳定和可控，我们通常不会通过MAC地址的比较让交换机自己去选根桥。）一般会将核心交换设备配置为网络的根桥——将其桥优先级调节为最小值，从而确保其成为根桥。
+
+在选举出根桥后，根桥仍然持续向网络中发送配置BPDU，而非根桥将持续不断地收到根桥发送的配置BPDU。
+STP计算过程的第二步是在每个非根桥上选择一个根端口，根端口是每台交换机上收到最优BPDU的端口。
+
+STP基础配置：
+指定生成树协议类型（STP/RSTP/MSTP），默认是MSTP。
+[sw]stp mode {stp | rstp | mstp}
+配置交换机优先级，默认是32768.
+[sw]stp priority pri
+配置该交换机成为主根桥（将交换机的优先级设置为最小）
+[sw]stp root primary
+配置该交换机成为次根桥，次根桥就是二大王
+[sw]stp root secondary
+启用生成树
+[sw]stp enable
+配置端口STP优先级
+[sw]int g0/0/1
+[sw-g0/0/1]stp priority priority
+配置端口路径开销
+[sw-g0/0/1]stp cost cost
+当交换机的一个接口连接着一台路由器或者其他不可能产生二层环路的设备时，可以关闭该接口的STP
+[sw-g0/0/1]stp disable
+[sw-g0/0/1]bpdu disable
+
+注意，如果错误的配置bpdu disable将会导致STP计算的错误从而导致环路，因此该命令要格外留意。
+S5300 V100R005版本的交换机默认在STP全局激活的情况下接口的bpdu是disable的。
+
+在运行STP的交换机上，交换机连接终端设备(服务器、终端主机、PC等)的端口，可以设置为边缘端口。边缘端口UP后立即进入转发状态。
+边缘端口的UP/DOWN不会触发STP拓扑变更而发生TC报文。
+[sw-g0/0/1]stp edged-port enable
+
+在没有配置BPDU保护的情况下，边缘端口一旦收到BPDU，就丧失了边缘端口属性，成为了普通的STP端口。
+配置BPDU保护
+[sw]stp bpdu-protection
+
+正常情况下，边缘端口不会收到BPDU报文，但是如果攻击者伪造BPDU恶意攻击交换机，那就会存在隐患（或者接口误接了交换机，那么就有可能产生环路）。
+通过使能BPDU保护可以防止伪造BPDU恶意攻击，交换机启动BPDU保护功能后，如果边缘端口收到BPDU报文，设备将关闭shutdown这些端口，
+同时通知网管系统，缺省情况下，交换机的BPDU保护功能并未开启。
+
+要恢复被shutdown的BPDU受保护边缘端口，可手动配置：undo shutdown
+或者采用自动恢复的方式，即在系统视图下执行命令：error-down auto-recovery cause cause-item interval interval-value
+激活接口管理状态自动恢复为UP的功能，并设置接口自动恢复为UP的延时时间interval-value，取值范围30-86400，单位是秒。
+
+根保护（Root Protection）
+防止因新增设备误配置stp优先级比根交换机优先级低，导致生成树重新计算从而引发网络动荡。
+根保护是指定端口上的特性，在新增设备的端口设置根保护：[sw-g0/0/1]stp root-protection
+
+环路保护(Loop Protection)
+防止单向链路故障，引发的环路。在STP中，环路保护功能只能配置在根端口、替代端口及备份端口上。
+[sw-g0/0/1]stp loop-protection
