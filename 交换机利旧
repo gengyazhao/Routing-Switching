@@ -1,0 +1,23 @@
+应用场景
+
+1、忘记旧交换机console口密码
+
+2、旧交换机内已有的配置影响后续配置或与后续配置重复、冲突，导致网络不能正常通信。
+
+解决办法：
+
+下电重启交换机，在出现提示时按下快捷键CTRL+B或者CTRL+E，进入BootROM主菜单
+盒式交换机在V100R006C03之前的版本，BootROM默认密码为huawei；
+                 在V100R006C03及之后的版本，默认密码为Admin@huawei.com。
+
+框式交换机在V100R006及之前的版本，BootROM默认密码为9300；
+                 在V100R006之后的版本，默认密码为Admin@huawei.com。
+进入后选择清除clear console 口密码选项，即可清除已有console口密码。
+
+虽然已经清除console口密码，但是交换机内的配置仍未清除，下一步就是清除配置。
+在系统视图下输入如下命令：
+reset saved-configuration
+y
+reboot
+n
+y
