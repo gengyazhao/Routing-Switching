@@ -1,0 +1,38 @@
+接口的链路类型总共有4种，分别为：Access、Trunk、Hybrid、Dot1q-tunnel。
+在修改链路类型时，如果接口上VLAN的配置不是缺省值，需要先把接口上VLAN的配置恢复为缺省值，然后再修改链路类型。
+VLAN 1是系统自带的VLAN，不需要创建，也不可以删除。在缺省情况下，默认所有接口都加入到默认的VLAN  1中。
+ 
+相关知识点：
+恢复Access或Dot1q-tunnel接口上VLAN的缺省配置
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo port default vlan
+恢复Trunk接口上VLAN的缺省配置
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo port trunk pvid vlan
+[HUAWEI-GigabitEthernet0/0/1] undo port trunk allow-pass vlan all
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 1
+恢复Hybrid接口上VLAN的缺省配置
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo port hybrid pvid vlan
+[HUAWEI-GigabitEthernet0/0/1] undo port hybrid vlan all
+[HUAWEI-GigabitEthernet0/0/1] port hybrid untagged vlan 1
+
+接口批量加入VLAN
+通过端口组可以把接口批量加入VLAN；
+对于Access接口，还可以在VLAN视图下直接批量将接口加入VLAN。
+access接口类型。
+Eg: //批量把端口gigabitethernet1/0/1 to gigabitethernet1/0/5加入VLAN10
+通过端口组批量将接口加入VLAN
+<HUAWEI> system-view
+[HUAWEI] port-group pg1  										//创建端口组pg1
+[HUAWEI-port-group-pg1] group-member gigabitethernet1/0/1 to gigabitethernet1/0/5  	 
+[HUAWEI-port-group-pg1] port link-type access  									 
+[HUAWEI-port-group-pg1] port default vlan 10  										
+在VLAN视图下批量将接口加入VLAN
+<HUAWEI> system-view
+[HUAWEI] vlan 10
+[HUAWEI-vlan10] port gigabitethernet 1/0/1 to 1/0/5  
+注意：执行此操作前，须先将所有要批量加入VLAN的接口的接口类型配置为access。
