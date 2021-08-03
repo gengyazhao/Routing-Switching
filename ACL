@@ -1,0 +1,17 @@
+S5000系列以太网交换机不支持配置用户自定义类型的访问控制列表
+
+acl { number acl-number | name acl-name [ advanced | basic | link ] } [ match-order { config | auto } ]
+undo acl { number acl-number | name acl-name | all }
+
+number acl-number：访问列表序号，取值范围为:
+2000～2999：表示基本访问控制列表。
+3000～3999：表示高级访问控制列表。
+4000～4999：表示二层访问控制列表。
+name acl-name：字符串参数，必须以英文字母（即[a-z,A-Z]）开始，而且中间不能有空格和引号；不区分大小写，不允许使用all、any关键字。
+advanced：表示高级访问控制列表。
+basic：表示基本访问控制列表。
+link：表示二层访问控制列表。
+config：表示匹配访问列表的规则时按用户的配置顺序。
+auto：表示匹配访问列表的规则时按深度优先顺序。
+all：表示要删除所有的访问列表（包括数字标识的和名字标识的）。
+
