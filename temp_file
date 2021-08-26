@@ -163,7 +163,26 @@ BGP会在需要交换路由的路由器之间建立TCP连接，这些路由器�
 VRRP
 ACL
 ACL （Access Control List）访问控制列表，通过识别数据包中的源/目的地址、协议类型、源/目的端口，从而对报文进行匹配。
-一个ACL可以包含多条规则Rule，
+一个ACL可以包含多条规则Rule，每条规则都有一个编号，所有规则按照规则编号大小进行排列，编号越小，排行越前。
+在每一个规则中，都可定义匹配条件，以及相应的允许/拒绝动作。
+规则从小到大执行，如果被匹配对象满足该条规则中的匹配条件，则执行其所定义的动作，并且不会再往下计算其他规则。
+
+ACL可以使用一个数字来命名，也可以使用一个字符串来命名。
+基本ACL，数字范围2000-2999
+高级ACL，数字范围3000-2999
+
+ACL主要使用场景：
+1、	被流量策略调用，用于过滤流量（可基于源、目的目的IP地址、协议类型、端口号等元素）、
+2、	在Route-policy中被调用，用于匹配特定的路由前缀，从而执行路由策略
+3、	在VPN中调用，用于匹配感兴趣数据流
+4、	在防火墙的策略部署中调用，用于匹配流量
+
+创建ACL
+acl 2345
+rule 0 deny/permit source/destination  x.x.x.x 0.0.255.255
+
+防火墙基础
+
 包过滤防火墙（Packet Filtering）：包过滤利用定义的特定规则过滤数据包，防火墙直接获得数据包的IP源地址、目的地址、TCP/UDP的源端口、TCP/UDP的目的端口。
 缺点：缺乏灵活性，对动态协商端口没有办法设置规则；每个包都要策略检查，策略过多会导致性能急剧下降。
 
@@ -191,11 +210,6 @@ E1000E-N防火墙V1R1C30版本，根系统最多支持100个安全区域（包�
 出方向Outbound：数据由高级别向低级别方向传输
 安全策略（Security Policy）是控制设备对流量的转发，以及对流量进行内容安全一体化检测的策略。
 
-ACL主要使用场景：
-1、	被流量策略调用，用于过滤流量（可基于源、目的目的IP地址、协议类型、端口号等元素）、
-2、	在Route-policy中被调用，用于匹配特定的路由前缀，从而执行路由策略
-3、	在VPN中调用，用于匹配感兴趣数据流
-4、	在防火墙的策略部署中调用，用于匹配流量
 
 NAT
 VPN
@@ -212,4 +226,35 @@ MPLS
 MPLS VPN
 LDP
 Qos
+基本ACL配置：
+ 
+
+acl 2001
+rule 0 deny source 192.168.1.2 0
+rule 1 permit source any
+int g0/0/1
+traffic-filter inbound acl 2001
+
+高级ACL配置：
+ 
+acl 3000
+rule deny ip source 192.168.1.2 0 destination 10.0.0.2 0
+rule permit ip
+int g0/0/1
+traffic-filter inbound acl 3000
+
+ 
+
+acl 3000
+rule deny tcp source 192.168.1.2 0 destination 10.0.0.2 0 destination-port eq 23
+rule permit ip
+int g0/0/1
+traffic-filter inbound acl 3000
+ 
+
+acl 3000
+rule deny icmp
+rule permit ip
+int g0/0/1
+traffic-filter inbound acl 3000
 
