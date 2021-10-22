@@ -1,0 +1,259 @@
+数通知识笔记
+TCP/IP五层协议模型：应用层、传输层、网络层、数据链路层、物理层
+OSI七层协议模型：应用层、会话层、表示层、传输层、数据链路层、物理层
+A类地址：0（1-126）
+B类地址：10（128-191）
+C类地址：110（192-223）
+D类地址：1110（224-239）
+E类地址：Research
+
+网络地址：主机位全部为0
+广播地址：主机位全部为1
+私有地址：10.x.x.x	172.16.x.x-172.31.x.x	192.168.x.x
+保留地址：127.x.x.x (回环地址)	169.254.x.x (找不到DHCP服务器时的临时地址)
+
+VRP	Versatile Routing Platform通用路由平台，简称VRP。VRP其实就是运行在华为数通产品上的操作系统。
+
+二层交换基础：
+VLAN
+Virtual Local Area Network虚拟局域网VLAN是将一个物理网络在逻辑上划分成多个虚拟的、逻辑的局域网。一个VLAN就是一个广播域。
+VLAN ID，其取值范围为1～4094，VLAN工作于OSI参考模型的第二层。
+
+
+二层接口链路类型：Access、Trunk、hybrid
+Access
+Access接口只能加入一个VLAN，该VLAN就是接口的缺省VLAN。
+Access接口只能发送不带标记的数据帧（也就是untagged帧），通常也只接收untagged帧。常用于连接PC、服务器、路由器或其他终端。
+
+Access口接收帧：
+如果该帧是Untagged帧，则接收帧并打上接口的PVID（也就是Access接口的default vlan 或缺省vlan）
+如果该帧是Tagged帧，则当其VLAN-ID与接口PVID相同时接收该帧，否则丢弃。
+Trunk
+Trunk接口一般用于交换机之间连接的端口，Trunk口可以加入多个VLAN，可以接收和发送多个VLAN的Tagged帧。
+当交换机的接口连接的对端设备（例如路由器、防火墙）的接口部署了以太网子接口，交换机的接口也需要配置为trunk或者hybrid类型。
+
+Trunk口接收帧：
+如果收到的数据帧是Untagged帧，则为数据帧打上接口的PVID标记，若PVID在接口允许通行（Allow-pass）的VLAN列表中，则接收该帧，否则丢弃。
+缺省时，Trunk接口的PVID为1，而且VLAN1缺省已经在允许通行的VLAN列表中。
+
+若收到的数据帧是Tagged帧，且其VLAN-ID在接口允许通行的VLAN列表中，则接收该帧，否则丢弃。
+Trunk口发送帧：
+若该帧的vlan-id与接口的PVID相同，且该VLAN在允许通行的VLAN列表中，则去掉Tag，发送数据帧。
+若该帧的vlan-id与接口PVID不相同，且该VLAN在允许通行的vlan-id列表中，则保持原有Tag，发送该Tagged帧，
+而如果数据帧的vlan-id不在允许通行的VLAN列表中，则禁止从该接口发出。
+
+Hybrid
+可以用于交换机之间连接，也可以用于接计算机，hybrid端口可以属于多个VLAN，可以接收和发送多个VLAN的Tagged帧。
+Trunk接口只能设置一个VLAN在发送数据帧时不打标记，而hybrid接口则可设置多个VLAN在发送数据帧时不打标记。
+Hybrid口接收帧：
+若数据帧是Untagged帧，则将其打上PVID的Tag，若PVID在接口允许通行的VLAN列表中则接收，否则丢弃。
+若数据帧是Tagged帧，且其vlan-id在接口允许通行的VLAN列表中则接收该帧，否则丢弃。
+Hybrid口发送帧：
+当该帧的vlan-id是接口允许通行的VLAN时，发送该帧，此时可以通过命令设置发送时是否携带Tag。
+
+PVID
+PVID 也就是default vlan 或缺省vlan
+交换机接口缺省类型为Hybrid，缺省VLAN为VLAN1，缺省配置port hybrid untagged vlan 1
+将接口PVID修改为10
+port hybrid pvid vlan 10 
+
+将接口加入到VLAN10
+port hybrid untagged vlan 10
+
+基于IP地址识别VLAN的功能（数通知识宝典61页）
+二层防环技术：
+STP
+生成树协议Spanning-tree，简称STP协议。
+
+STP采用四个步骤来解决二层环路问题：
+1、	在交换网络中选举一个根桥（Root Bridge，简称RB）
+2、	在每个非根桥上选举一个根端口（Root Port，简称RP）
+3、	在每个段中选举一个指定端口（Designated Port，简称DP）
+4、	阻塞非指定端口（Non-Designated Port，简称NDP）。
+MSTP
+Smart Link
+Monitor Link
+链路聚合：
+Eth-trunk
+手工负载分担（Manual load-balance）
+LACP
+OSPF
+动态路由协议根据作用范围可分为：IGP（RIP、OSPF、ISIS）和EGP（BGP）
+IGP：内部网关协议Interior Gateway Protocol，在一个自治系统（AS）内部运行
+EGP：外部网关协议Exterior Gateway Protocol，运行于不同自治系统之间
+
+距离矢量协议（Distance-Vector）：RIP、BGP，其中BGP也被称为路径矢量协议（Path-Vector）
+链路状态协议：（Link-State），OSPF和IS-IS，运行链路状态路由协议的路由器是知晓网络的拓扑结构的。
+
+OSPF（Open Shortest Path First）开放最短路径优先协议：LSA链路状态通告（Link State Advertisement）、LSDB链路状态数据库（Link State DataBase）、SPF最短路径算法（Shortest Path First）
+1、	运行链路状态路由协议的路由器之间首先会基于路由协议建立邻居关系，然后开始LSA泛洪
+2、	路由器将网络中泛洪的LSA搜集到自己的LSDB中
+3、	每台路由器基于LSDB，使用SPF算法计算出以自己为根的、到达网络各个角落的、无环的树
+4、	路由器将计算出来的路由装载进路由表
+
+OSPF Router-ID用于在OSPF域中唯一地标识一台OSPF路由器，Router-ID格式与IPv4格式相同，建议手工配置OSPF的router-id
+OSPF 使用Cost开销作为路由度量值，每一个激活OSPF的接口都有一个接口的Cost值，Cost = 100M / 接口带宽，接口带宽越高该接口Cost越小
+
+默认的参考带宽是100M，高带宽传输介质在OSPF协议中Cost会出现小于1的分数，会被四舍五入为1，现今网络设备都是大于100M，这样Cost计算就不精确了，可以使用bandwidth-reference命令修改，但是一旦配置，建议全网OSPF路由器都要配置。
+OSPF一共有五种报文：
+Hello报文
+DD报文
+LSR报文
+LSU报文
+LSAck报文
+OSPF的三张表：
+邻居表Peer table
+链路状态数据库LSDB（Link-state Database）
+OSPF路由表（Routing table）
+
+OSPF邻居关系建立过程是一个重点：
+发送Hello包，发现直连链路上的OSPF路由器，建立双向关系
+交换LSA，协商主从关系
+同步LSA，请求/发送LSAs
+完成同步，进入OSPF全毗邻
+
+MA（Multi-Access）多路访问网络是指一个可以同时接入多个节点的网络。
+
+DR指定路由器：在一个MA网络中，最高OSPF接口优先级的拥有者被选作DR，如果优先级（默认值为1）相等，具有最高的OSPF router-id的路由器被选举成DR。DR具有非抢占性，更高优先级设备加入不影响DR角色。
+DR负责侦听MA网络中的拓扑变更信息并将变更信息通知其他路由器。
+BDR备用指定路由器：BDR监控DR状态，并在DR发生故障时接替其角色。
+
+OSPF使用两个知名的组播地址：224.0.0.5及224.0.0.6
+所有的OSPF路由器的接口都会侦听发向224.0.0.5的报文，在此基础上，DR/BDR会侦听224.0.0.6
+OSPF每个区域都使用area-id 进行标识，area-id通常采用十进制，也可采用点分十进制来标识。area 0.0.0.0 等同于area 0
+骨干区域area0，在OSPF域内必须有且只有一个area0，骨干区域负责在非骨干区域之间发布由区域边界路由器汇集的路由信息，从而实现区域之间的互通。
+
+为避免区域间的路由环路，非骨干区域之间不允许直接相互发布区域间路由，每个非骨干区域都必须连接到骨干区域。
+OSPF路由器的角色：
+1、	区域内路由器Internal Router
+2、	区域边界路由器 Area Border Router
+3、	骨干路由器Backbone Router
+4、	AS 边界路由器 AS Boundary Router
+
+OSPF基础配置：
+Ospf 1 router-id 0
+Area 0
+Network x.x.x.x  wildcard-mask(通配符掩码，反子网掩码)
+Dis ospf peer 查看ospf邻居关系（一般来讲，两台设备如果建立了邻接关系，那么状态必须为Full）
+Dis ip routing-table查看路由表
+Silent-interface Vlanif 10当VLAN中没有OSPF设备时，可以将接口配置为静默接口。
+Dis ospf b 查看ospf运行参数
+Dis ospf lsdb 查看LSDB表
+Dis ospf routing 查看ospf路由
+183页
+
+
+
+RIP
+堆叠
+Route-policy
+BGP
+IGP工作的着眼点在AS自治系统内部，职责是负责AS内的路由发现和快速收敛。
+AS（Autonomous system）自治系统，可以理解为一个独立的机构或者企业。不同的AS通过AS号区分，AS号取值范围1-65535，其中64512-65535是私有AS号，在私有网络可随意使用。
+IANA负责AS号的分发，如果要使用公有AS号，则需要向IANA申请。
+
+BGP（Border Gateway Protocol，边界网关协议）：一种距离矢量路由协议，严格来说叫路径矢量路由协议，主要用于在AS之间传递路由信息，适用于大规模的网络环境，Internet的骨干网络正是利益于BGP
+才能承载如此在批量的路由前缀。无论是IGP内部网关路由协议，还是外部网关路由协议，最终目的都是为了实现路由的互通，从而最终实现数据的互通。
+
+BGP的协议特征：
+BGP在传输层使用TCP以确保可靠传输，所使用的TCP目的端口号为179
+BGP会在需要交换路由的路由器之间建立TCP连接，这些路由器被称为BGP对等体，也叫BGP邻居；有两种BGP邻居关系：EBGP邻居关系，以及IBGP邻居关系
+
+
+VRRP
+ACL
+ACL （Access Control List）访问控制列表，通过识别数据包中的源/目的地址、协议类型、源/目的端口，从而对报文进行匹配。
+一个ACL可以包含多条规则Rule，每条规则都有一个编号，所有规则按照规则编号大小进行排列，编号越小，排行越前。
+在每一个规则中，都可定义匹配条件，以及相应的允许/拒绝动作。
+规则从小到大执行，如果被匹配对象满足该条规则中的匹配条件，则执行其所定义的动作，并且不会再往下计算其他规则。
+
+ACL可以使用一个数字来命名，也可以使用一个字符串来命名。
+基本ACL，数字范围2000-2999
+高级ACL，数字范围3000-2999
+
+ACL主要使用场景：
+1、	被流量策略调用，用于过滤流量（可基于源、目的目的IP地址、协议类型、端口号等元素）、
+2、	在Route-policy中被调用，用于匹配特定的路由前缀，从而执行路由策略
+3、	在VPN中调用，用于匹配感兴趣数据流
+4、	在防火墙的策略部署中调用，用于匹配流量
+
+创建ACL
+acl 2345
+rule 0 deny/permit source/destination  x.x.x.x 0.0.255.255
+
+防火墙基础
+
+包过滤防火墙（Packet Filtering）：包过滤利用定义的特定规则过滤数据包，防火墙直接获得数据包的IP源地址、目的地址、TCP/UDP的源端口、TCP/UDP的目的端口。
+缺点：缺乏灵活性，对动态协商端口没有办法设置规则；每个包都要策略检查，策略过多会导致性能急剧下降。
+
+代理型防火墙（Application Gateway）：对客户端来说防火墙是一个服务器，对服务器来说防火墙是一个客户端。
+缺点：开发代价很大，不能支持很丰富的业务。
+
+状态检测防火墙：检查应用层协议并且监控基于连接的应用层协议状态。根据连接状态信息动态地决定数据包是否被允许通过防火墙或丢弃。
+现在防火墙的主流产品都是状态检测防火墙。
+
+安全区域Security Zone，简称为区域Zone，安全区域优先级1-100，数字越大表示安全级别越高。然后将防火墙的接口关联到一个安全区域，那么该接口所连接的网络就属于这个安全区域。
+Trust	优先级 85	通常用于定义内网用户所在网络
+Untrust	优先级 5	通常用于定义Internet等不安全的、外部的网络
+DMZ	优先级 50	通常用于定义内网服务器所在区域，经常需要被外网访问，存在一定的安全隐患
+Local	优先级 100	Local区域定义的设备本身，包括设备的各接口。防火墙自身构造并主动发出的报文均可认为是从Local区域中发出。目的地是防火墙的报文均可由Local区域接收。
+
+用户不能改变Local区域本身的任何配置，包括向其中添加接口。
+缺省已经创建的安全区域不能被删除，用户可以自行设置新的安全区域并定义其安全优先级。
+防火墙一个接口只能属于一个特定区域，一个区域可以包含多个接口，接口只有划分到区域中才能正常处理报文。
+
+在一台防火墙上不允许创建两个相同安全级别（Priority）的安全区域
+E1000E-N防火墙V1R1C30版本，根系统最多支持100个安全区域（包括4个保留区域），每个虚拟系统最多支持8个安全区域（包括4个保留区域）
+
+安全区域间数据流动具有方向性，包括入方向Inbound和出方向Outbound
+入方向Inbound：数据由低级别向高级别方向传输
+出方向Outbound：数据由高级别向低级别方向传输
+安全策略（Security Policy）是控制设备对流量的转发，以及对流量进行内容安全一体化检测的策略。
+
+
+NAT
+VPN
+GRE
+IPSec VPN
+SNMP
+NTP
+IGMP
+RPF
+PIM
+PIM-DM
+PIM-SM
+MPLS 
+MPLS VPN
+LDP
+Qos
+基本ACL配置：
+ 
+
+acl 2001
+rule 0 deny source 192.168.1.2 0
+rule 1 permit source any
+int g0/0/1
+traffic-filter inbound acl 2001
+
+高级ACL配置：
+ 
+acl 3000
+rule deny ip source 192.168.1.2 0 destination 10.0.0.2 0
+rule permit ip
+int g0/0/1
+traffic-filter inbound acl 3000
+
+ 
+
+acl 3000
+rule deny tcp source 192.168.1.2 0 destination 10.0.0.2 0 destination-port eq 23
+rule permit ip
+int g0/0/1
+traffic-filter inbound acl 3000
+ 
+
+acl 3000
+rule deny icmp
+rule permit ip
+int g0/0/1
+traffic-filter inbound acl 3000
