@@ -10,3 +10,48 @@ LS6MCAS10
 堆叠端口（Stack-Port）是专用于堆叠的逻辑端口，需要和堆叠成员端口（物理端口）绑定。
 堆叠系统的每台成员交换机上支持两个Stack-Port，分别为Stack-Port n/1和Stack-Port n/2，其中n为成员交换机的堆叠ID。
 堆叠成员端口指的是设备上用于堆叠连接的物理端口。
+
+
+
+堆叠系统对堆叠端口的配置是有要求的。堆叠端口是一个逻辑口，配置堆叠时，本设备的Stack-Port n/1只能和邻居的Stack-Port n/2相连，而本设备的Stack-Port n/2只能与邻居设备的Stack-Port n/1相连。
+（注：ATAE交换板在进行堆叠时，则没有这个限制）
+S6300-1的XGE0/0/1、XGE0/0/2
+S6300-2的XGE0/0/1、XGE0/0/2
+假设S6300-1的堆叠ID为0，需要将S6300-1的XGE0/0/1、XGE0/0/2堆叠成员端口添加到堆叠端口Stack-Port 0/1中
+假设S6300-2的堆叠ID为1，需要将S6300-2的XGE0/0/1、XGE0/0/2堆叠成员端口添加到堆叠端口Stack-Port 1/2中
+
+堆叠注意事项：
+S6300系列设备使用前面板上任意10GE业务口做堆叠口，由于设备芯片结构的原因，前面板上的10GE口，从XGE0/0/1开始，每4个口为一组，一组中的4个口必须都是堆叠口或者都是业务口。
+因此，只要一组中的其中一个被配置为堆叠口，其他的都不能作为业务口使用。一旦接口被配置为堆叠成员端口，那么该接口将不能作为普通业务口使用。
+
+配置指导：
+先规划设备的堆叠ID并明确哪一台是主设备，接着配置设备的堆叠ID以及堆叠优先级，再配置Stack-Port,完成配置后保存。然后将设备下电、连线、再上电，最后完成堆叠。
+SW1的XGE0/0/1口通过堆叠线与SW2的XGE0/0/1口互联
+SW1的XGE0/0/2口通过堆叠线与SW2的XGE0/0/2口互联
+
+SW1:
+stack enable
+interface stack-port 0/1
+port interface xgigabitethernet 0/0/1 enable
+port interface xgigabitethernet 0/0/2 enable
+quit
+stack slot 0 priority 200
+quit
+save
+
+
+
+
+SW2:
+stack enable
+interface stack-port 0/2
+port interface xgigabitethernet 0/0/1 enable
+port interface xgigabitethernet 0/0/2 enable
+quit
+stack slot 0 renumber 1
+quit
+save
+
+SW1/SW2下电，连接堆叠线缆。
+先将SW1上电，再将SW2上电。
+
