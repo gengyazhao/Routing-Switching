@@ -55,3 +55,32 @@ save
 SW1/SW2下电，连接堆叠线缆。
 先将SW1上电，再将SW2上电。
 
+完成堆叠后，查看一下堆叠系统：
+display stack
+
+
+
+
+
+MAD多主检测（Multi-Active Detection）配置：
+多主检测是在堆叠系统组建完成后，增加一条互联线缆，该线缆可以是普通网线或光纤，但是用于MAD的接口必须是普通业务口，不能是堆叠成员端口。
+注意此时堆叠系统已经建立，SW2的堆叠ID被修改为1，
+假设互联线缆是SW1和SW2的XGE0/0/5,则配置时SW1 XGE0/0/5;SW2 XGE1/0/5
+
+MAD配置：
+interface gigabitethernet 0/0/5
+mad detect mode direct
+y
+
+interface gigabitethernet 1/0/5
+mad detect mode direct
+y
+
+完成配置后，检查一下：
+display mad verbose
+
+
+注意事项：
+堆叠端口的配置不保存到配置文件中，使用display current-configuration命令是无法查看堆叠配置的。
+配置完成后，可以使用display device/display stack/display stack port等命令查看堆叠信息。
+
