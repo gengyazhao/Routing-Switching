@@ -51,6 +51,9 @@ port hybrid untagged vlan 10
 在修改链路类型时，如果接口上VLAN的配置不是缺省值，需要先把接口上VLAN的配置恢复为缺省值，然后再修改链路类型。
 
 VLAN 1是系统自带的VLAN，不需要创建，也不可以删除。在缺省情况下，默认所有接口都加入到默认的VLAN  1中。
+
+默认Trunk口是允许vlan 1通过的，trunk 端口禁用valn 1
+un port trunk allow-pass v 1
  
 相关知识点：
 恢复Access或Dot1q-tunnel接口上VLAN的缺省配置
