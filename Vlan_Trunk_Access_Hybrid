@@ -1,0 +1,87 @@
+VLAN
+Virtual Local Area Network虚拟局域网VLAN是将一个物理网络在逻辑上划分成多个虚拟的、逻辑的局域网。一个VLAN就是一个广播域。
+VLAN ID，其取值范围为1～4094，VLAN工作于OSI参考模型的第二层。
+
+
+二层接口链路类型：Access、Trunk、hybrid
+Access
+Access接口只能加入一个VLAN，该VLAN就是接口的缺省VLAN。
+Access接口只能发送不带标记的数据帧（也就是untagged帧），通常也只接收untagged帧。常用于连接PC、服务器、路由器或其他终端。
+
+Access口接收帧：
+如果该帧是Untagged帧，则接收帧并打上接口的PVID（也就是Access接口的default vlan 或缺省vlan）
+如果该帧是Tagged帧，则当其VLAN-ID与接口PVID相同时接收该帧，否则丢弃。
+Trunk
+Trunk接口一般用于交换机之间连接的端口，Trunk口可以加入多个VLAN，可以接收和发送多个VLAN的Tagged帧。
+当交换机的接口连接的对端设备（例如路由器、防火墙）的接口部署了以太网子接口，交换机的接口也需要配置为trunk或者hybrid类型。
+
+Trunk口接收帧：
+如果收到的数据帧是Untagged帧，则为数据帧打上接口的PVID标记，若PVID在接口允许通行（Allow-pass）的VLAN列表中，则接收该帧，否则丢弃。
+缺省时，Trunk接口的PVID为1，而且VLAN1缺省已经在允许通行的VLAN列表中。
+
+若收到的数据帧是Tagged帧，且其VLAN-ID在接口允许通行的VLAN列表中，则接收该帧，否则丢弃。
+Trunk口发送帧：
+若该帧的vlan-id与接口的PVID相同，且该VLAN在允许通行的VLAN列表中，则去掉Tag，发送数据帧。
+若该帧的vlan-id与接口PVID不相同，且该VLAN在允许通行的vlan-id列表中，则保持原有Tag，发送该Tagged帧，
+而如果数据帧的vlan-id不在允许通行的VLAN列表中，则禁止从该接口发出。
+
+Hybrid
+可以用于交换机之间连接，也可以用于接计算机，hybrid端口可以属于多个VLAN，可以接收和发送多个VLAN的Tagged帧。
+Trunk接口只能设置一个VLAN在发送数据帧时不打标记，而hybrid接口则可设置多个VLAN在发送数据帧时不打标记。
+Hybrid口接收帧：
+若数据帧是Untagged帧，则将其打上PVID的Tag，若PVID在接口允许通行的VLAN列表中则接收，否则丢弃。
+若数据帧是Tagged帧，且其vlan-id在接口允许通行的VLAN列表中则接收该帧，否则丢弃。
+Hybrid口发送帧：
+当该帧的vlan-id是接口允许通行的VLAN时，发送该帧，此时可以通过命令设置发送时是否携带Tag。
+
+PVID
+PVID 也就是default vlan 或缺省vlan
+交换机接口缺省类型为Hybrid，缺省VLAN为VLAN1，缺省配置port hybrid untagged vlan 1
+将接口PVID修改为10
+port hybrid pvid vlan 10 
+
+将接口加入到VLAN10
+port hybrid untagged vlan 10
+
+
+
+
+
+接口的链路类型总共有4种，分别为：Access、Trunk、Hybrid、Dot1q-tunnel。
+在修改链路类型时，如果接口上VLAN的配置不是缺省值，需要先把接口上VLAN的配置恢复为缺省值，然后再修改链路类型。
+
+VLAN 1是系统自带的VLAN，不需要创建，也不可以删除。在缺省情况下，默认所有接口都加入到默认的VLAN  1中。
+ 
+相关知识点：
+恢复Access或Dot1q-tunnel接口上VLAN的缺省配置
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo port default vlan
+恢复Trunk接口上VLAN的缺省配置
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo port trunk pvid vlan
+[HUAWEI-GigabitEthernet0/0/1] undo port trunk allow-pass vlan all
+[HUAWEI-GigabitEthernet0/0/1] port trunk allow-pass vlan 1
+恢复Hybrid接口上VLAN的缺省配置
+<HUAWEI> system-view
+[HUAWEI] interface gigabitethernet0/0/1
+[HUAWEI-GigabitEthernet0/0/1] undo port hybrid pvid vlan
+[HUAWEI-GigabitEthernet0/0/1] undo port hybrid vlan all
+[HUAWEI-GigabitEthernet0/0/1] port hybrid untagged vlan 1
+
+接口批量加入VLAN
+通过端口组可以把接口批量加入VLAN；
+对于Access接口，还可以在VLAN视图下直接批量将接口加入VLAN。
+access接口类型。
+Eg: //批量把端口gigabitethernet1/0/1 to gigabitethernet1/0/5加入VLAN10
+通过端口组批量将接口加入VLAN
+<HUAWEI> system-view
+[HUAWEI] port-group pg1  										//创建端口组pg1
+[HUAWEI-port-group-pg1] group-member gigabitethernet1/0/1 to gigabitethernet1/0/5  	 [HUAWEI-port-group-pg1] port link-type access  									 [HUAWEI-port-group-pg1] port default vlan 10  										
+在VLAN视图下批量将接口加入VLAN
+<HUAWEI> system-view
+[HUAWEI] vlan 10
+[HUAWEI-vlan10] port gigabitethernet 1/0/1 to 1/0/5  
+注意：执行此操作前，须先将所有要批量加入VLAN的接口的接口类型配置为access。
+ 
