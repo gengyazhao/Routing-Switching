@@ -15,3 +15,354 @@ HCIE-Big Data-Data Mining：培训与认证具备通过华为FusionInsight HD或
 HCIE-Cloud Computing：培训与认证具备华为云数据中心部署、运维、备份容灾和迁移的综合能力的专家
 HCIE-Cloud Service Solutions Architect：培训与认证具备在华为云上进行业务架构与应用架构的设计、优化与运维能力的专家
 HCIE-Enterprise Communication：培训与认证具备大型综合企业通信方案规划设计、部署和运维能力的专家
+
+
+
+HCIE-Routing & Switching（新版）
+华为职业认证HCIE优化升级后将聚焦七大综合能力的考察： 技术理解能力、规划设计能力、工程实施能力、故障诊断能力、归纳分析能力、理解应用能力、系统调测能力
+
+建议掌握的知识
+不同设备和网络之间复杂连接问题的解决方法（高级路由协议），使用技术解决方案提高带宽、缩短时延、最大限度提高性能，加强安全性和支持全球应用，复杂网络的故障排除
+考试代码	认证考试
+H12-261	HCIE-Routing & Switching （笔试）
+H12-266	HCIE-Routing & Switching（新实验）
+
+HCIE-Routing & Switching （笔试）知识点
+1.Layer 2 Technologies    12%
+2.IPv4/v6 Unicast         52%
+3.MPLS VPN                10%
+4.IPv4/v6 Multicast       6%
+5.Network Security        5%
+6.QoS                     5%
+7.Network Management      2%
+8.Features                3%
+9.SDN                     5%
+
+HCIE-Routing & Switching（新实验）
+通过分/总分（故障排除+TAC远程支持+论述题）：80/100
+通过分/总分（实验配置）：80/100
+通过分/总分（论述题）：15/20
+三个条件均满足则通过。
+
+知识点
+1.Layer 2 Technologies    7%
+2.IPv4/v6 Unicast         32%
+3.MPLS VPN                13%
+4.IPv4/v6 Multicast       4%
+5.Network Security        2%
+6.QoS                     3%
+7.Network Management      1%
+8.Feature                 1%
+9.Planning/Troubleshoot a Network       37%
+
+
+
+Layer 2 Technologies:
+STP
+VLAN
+Transparent bridge
+Link Aggregation, Eth-Trunk and IPTrunk, Load-balance, LACP
+Ethernet technologies
+Smart link
+DLDP
+Switched Port Analyzer (port-mirroring)
+CSS/iStack
+HDLC/IP-Trunk and PPP/MP
+PPPoE
+
+IPv4/v6 Unicast:
+IPv4 addressing, subnetting, and VLSM 
+IPv4 tunneling and GRE
+IPv6 addressing
+ICMPv6
+IPv6 functionality protocols
+Migration techniques
+IPv4/v6 OSPF
+IPv4/v6 IS-IS
+IPv4/v6 BGP
+Route Control
+
+
+MPLS VPN :
+MPLS 
+MPLS Layer 3 VPN
+Inter-AS MPLS VPN
+
+
+IPv4/v6 Multicast :
+IPv4/v6 Multicast 
+
+
+Network Security ：
+Access lists 
+uRPF
+IP Source Guard
+AAA
+802.1x / NAC
+NAT
+Device access control
+IPsec
+Traffic Suppression
+Local Attack Defense
+IP Address Anti-spoofing
+ARP Security
+DHCP Security
+
+
+
+QoS ：
+QoS
+
+
+Network Management ：
+Network Management
+
+
+Feature ：
+Feature
+
+SDN ：
+SDN 
+
+Planning/Troubleshoot a Network
+
+
+
+
+
+
+
+笔试知识点
+一、Layer 2 Technologies
+STP
+1. STP
+2. RSTP
+3. MSTP
+4. Loop guard
+5. Root guard
+6. BPDU guard
+7. TC-BPDU attack guard
+
+VLAN
+1. Access port
+2. Trunk port
+3. Hybrid port
+4. QinQ
+5. Vlan Aggregation
+6. Mux VLAN
+7. Voice VLAN
+
+Transparent bridge
+1. Local Bridging
+2. Remote Bridging
+3. Integrated Bridging and Routing
+4. VLAN ID Transparent Transmission
+
+Link Aggregation, Eth-Trunk and IP-Trunk, Load-balance, LACP
+1.Link Aggregation
+2.LACP
+
+Ethernet technologies
+1. Speed and duplex
+2. Ethernet, Fast Ethernet, Gigabit Ethernet, 10GE, 40GE,100GE
+3. Auto MDI/MDIX
+4. Auto negotiation
+5. Storm control
+6. Unicast flooding control
+
+Smart link
+
+DLDP
+
+Switched Port Analyzer (port-mirroring)
+
+CSS/iStack
+
+HDLC/IP-Trunk and PPP/MP
+
+PPPoE
+
+
+二、IPv4/v6 Unicast
+
+
+IPv4 addressing, subnetting, and VLSM
+
+IPv4 tunneling and GRE
+
+IPv6 addressing
+
+ICMPv6
+
+IPv6 functionality protocols
+
+Migration techniques
+1. Tunnelling techniques
+2. Translation techniques
+
+IPv4/v6 OSPF
+1. Standard OSPF areas
+2. Stub area
+3. Totally stubby area
+4. NSSA
+5. Totally NSSA
+6. LSA types
+7. Adjacency on a point-to-point and on a multi-access network
+8. Virtual-Link
+9. LSA Filter
+10. OSPF Fast Convergence
+11. Stub Router
+12. OSPF Authentication
+
+IPv4/v6 IS-IS
+1. NSAP
+2. IS-IS Link-state packets
+3. IS-IS area type
+4. IS-IS circuit type
+5. IS-IS TLV
+6. IS-IS DIS and Pseudo node
+7. IS-IS SPF
+8. IS-IS LSP
+9. IS-IS Metric
+10. IS-IS Route Leaking
+11. IS-IS MT
+12. IS-IS Fast Convergence
+13. IS-IS LDP Synchronization
+14. IS-IS Authentication
+
+IPv4/v6 BGP
+1. IBGP and EBGP
+2. BGP attributes
+3. BGP synchronization
+4. BGP routes Summarization
+5. Route Dampening
+6. BGP route reflector
+7. BGP Community
+8. BGP Peer Groups
+9. BGP Security
+10. Principles of Route Selection
+
+Route Control
+1. Filtering
+2. IP Prefix list
+3. Route Import(redistribution)
+4. Route policy
+5. Summarization
+6. Preference
+7. Other advanced features
+
+
+三、MPLS VPN
+MPLS
+1. MPLS network component (P, PE, CE)
+2. MPLS label format
+3. MPLS label encapsulation
+4. MPLS label stack
+5. MPLS label operation
+6. Forwarding Equivalence Class
+7. LDP
+8. Label advisement model
+9. MPLS LDP—Local Label Allocation Filtering
+10. MPLS LDP Inbound/outbound Label Binding Filtering
+
+MPLS Layer 3 VPN
+1. MP-IBGP VPNv4 peering
+2. VPN-instance
+3. Route Distinguisher
+4. Route Target
+5. Route Target import/export
+6. PE-CE–Dynamic Routes
+7. PE-CE–Static Routes
+8. Redistributing PE-CE routes into VPNv4
+9. Redistributing VPNv4 routes into PE-CE routing table
+10. MCE
+
+Inter-AS MPLS VPN
+
+Option A、Option B、Option C
+
+四、IPv4/v6 Multicast
+1. Multicast distribution tree
+2. Multicast forwarding
+3. Multicast RPF
+4. PIM sparse mode
+5. IGMP/MLD
+6. IGMP Snooping/MLD Snooping
+7. PIM RP, and BSR
+8. Multicast tools, features, and source-specific multicast
+
+五、Network Security
+
+Access lists
+
+uRPF
+
+IP Source Guard
+
+AAA
+
+802.1x / NAC
+
+NAT
+1. Static NAT/NAPT
+2. Dynamic NAT/PAT
+3. Easy IP
+4. NAT Server
+5. Twice NAT
+6. ALG
+7. NAT Mapping
+8. NAT Filtering
+
+Device access control
+
+IPsec
+
+Traffic Suppression
+
+Local Attack Defense
+
+IP Address Anti-spoofing
+
+ARP Security
+
+DHCP Security
+
+六、QoS
+1. Classification
+2. Traffic Policing
+3. Traffic Shaping
+4. Congestion Avoidance
+5. Congestion Management
+
+七、Network Management
+1. Syslog
+2. IP Service Level Agreement SLA
+3. NetStream
+4. NQA
+5. SNMP
+6. FTP
+7. Telnet
+8. SSH
+
+八、Feature
+1. VRRP
+2. VGMP
+3. Interface Backup
+4. NTP
+5. DHCP
+6. BFD
+7. NSF/GR
+8. NSR
+
+九、SDN
+1. Strategy of SDN/NFV
+2. SDN architecture
+3. VXLAN
+4. EVPN
+
+
+参考书籍
+HCIE-Routing & Switching 培训教材 V3.0
+HCIE-Routing & Switching 实验手册 V3.0
+推荐培训
+HCIE-Routing & Switching 华为路由交换专家认证培训
