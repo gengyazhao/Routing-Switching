@@ -1,0 +1,11 @@
+1、VRRP报文被封装在IP中，且发送地址为224.0.0.8。TTL值为255，并且协议号为112.（错）
+
+2、如果配置了stp loop-protection的端口不能收到BPDU，那么该接口会进入那个状态（A.Discarding）
+
+3、BGP邻居什么时候开始发送keepalive报文？（D.OpenSent状态）
+
+4、STP依据下面哪个条件进行根桥选举？（C.根桥优先级和MAC地址）
+
+5、MPLS EXP位占多少bit?（B.3）
+
+
