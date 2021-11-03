@@ -2,3 +2,43 @@
 虚拟路由冗余协议（Virtual Router Redundancy Protocol）：VRRP是一种路由容错协议，也可以叫做备份路由协议。
 一个局域网络内的所有主机都设置缺省路由，当网内主机发出的目的地址不在本网段时，报文将被通过缺省路由发往外部路由器，从而实现了主机与外部网络的通信。
 当缺省路由器down掉（即端口关闭）之后，内部主机将无法与外部通信，如果路由器设置了VRRP时，那么这时，虚拟路由将启用备份路由器，从而实现全网通信。
+
+VRRP路由器：运行VRRP的路由器，一台VRRP路由器（的接口）可以同时参与到多个VRRP组中，在不同的组中，一台VRRP路由器可以充当不同的角色。
+
+VRRP组：一个VRRP组由多个VRRP路由器组成，属于同一VRRP组的VRRP路由器互相交换信息，每一个VRRP组中只能有一个Master。
+同属一个VRRP组的路由器（的接口）使用相同的VRID，同属一个VRRP组的路由器之间交互VRRP报文，这些路由器必须处于相同的广播域中。
+
+虚拟路由器：对于每一个VRRP组，抽象出来的一个逻辑路由器，该路由器充当网络用户的网关，该路由器并非真实存在，事实上对于用户而言，
+只需知道虚拟路由器的IP地址，至于虚拟路由器的角色由谁来承担、数据转发任务由谁来承担、Master挂掉之后谁来接替，这是VRRP的工作。
+
+虚拟IP地址、虚拟MAC地址：虚拟IP地址是虚拟路由器的IP地址，该地址一般就是用户的网关地址。与虚拟IP地址对应的MAC地址也是虚拟的，
+该MAC地址由固定比特位加上VRRP VRID构成，当PC发送ARP报文去请求虚拟IP地址对应的MAC地址时，Master路由器响应这个ARP请求并告知虚拟MAC地址。
+
+Master路由器、Backup路由器：Master路由器就是在VRRP组中的主路由器，它是实际转发业务数据包的路由器，
+在每一个每一个VRRP组中，仅有Master才会响应对虚拟IP地址的ARP请求，也只有Master才会转发业务数据。
+Master路由器以一定的时间间隔发送发送VRRP报文，以便通知Backup路由器自己的存活。
+Backup路由器是在VRRP组中备份状态的路由器，一旦Master路由器出现故障，Backup路由器就开始接替工作。
+
+选举依据：先比较接口VRRP优先级（越大越优先，默认为100），如果优先级相等则比接口IP地址（IP地址最大的胜出）。
+
+
+R1、R2及PC连接在同一台二层交换机上。R1及R2将在GE0/0/0接口上运行VRRP，实现网关冗余。
+R1配置：
+[R1] interface gigabitethernet0/0/0
+[R1-gigabitethernet0/0/0]  ip address 192.168.1.253 24
+#接口激活VRRP，加入VRRP组（VRID为1），并且虚拟IP为192.168.1.254
+[R1-gigabitethernet0/0/0]  vrrp vrid 1 virtual-ip 192.168.1.254
+#该接口在该VRRP组中的优先级为120（默认100）
+[R1-gigabitethernet0/0/0]  vrrp vrid 1 priority 120
+#配置虚拟路由器的抢占时间为20s，抢占时间是指当主设备因为故障修复重新切换为主状态时等待的时间
+[R1-gigabitethernet0/0/0]  vrrp vrid 1 preempt-mode timer delay 20
+
+R2配置：
+[R2]  interface gigabitethernet0/0/0
+[R2-gigabitethernet0/0/0]  ip address 192.168.1.252 24
+[R2-gigabitethernet0/0/0]  vrrp vrid 1 virtual-ip 192.168.1.254
+
+需注意，由于R1与R2的GE0/0/0接口工作在同一个VRRP组，因此双方配置的VRID必须相同。
+完成配置后，在R1、R2上做一下查看：
+display vrrp
+/324
