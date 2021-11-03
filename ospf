@@ -6,6 +6,8 @@ EGP：外部网关协议Exterior Gateway Protocol，运行于不同自治系统�
 距离矢量协议：RIP、BGP，其中BGP也被称为路径矢量协议（Path-Vector）
 链路状态协议：（Link-State），OSPF和IS-IS，运行链路状态路由协议的路由器是知晓网络的拓扑结构的。
 
+OSPF是一种基于链路状态的协议，具有收敛快、路由无环、可扩展等优点。
+
 OSPF（Open Shortest Path First）开放最短路径优先协议：LSA链路状态通告（Link State Advertisement）、LSDB链路状态数据库（Link State DataBase）、SPF最短路径算法（Shortest Path First）
 1、	运行链路状态路由协议的路由器之间首先会基于路由协议建立邻居关系，然后开始LSA泛洪
 2、	路由器将网络中泛洪的LSA搜集到自己的LSDB中
@@ -26,6 +28,8 @@ OSPF的三张表：
 邻居表Peer table
 链路状态数据库LSDB（Link-state Database）
 OSPF路由表（Routing table）
+
+LSA头部信息，除Hello报文外，其它的OSPF报文都携带LSA信息。常用的LSA类型有五种。
 
 OSPF邻居关系建立过程是一个重点：
 发送Hello包，发现直连链路上的OSPF路由器，建立双向关系
