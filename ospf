@@ -46,6 +46,16 @@ BDR(Backup Designated Router)备用指定路由器：BDR监控DR状态，并在D
 ABR区域边界路由器
 ASBR自治系统边界路由器
 
+LSA是描述网络拓扑、网段信息、路由信息等内容的一系列链路状态信息。完整的LSA信息只在OSPF LSU报文中存在。
+常见的OSPF LSA类型有7种：
+LSA类型   LSA名称                 LSA描述
+1         Router-LSA             每个设备才会产生，描述了设备的链路状态和开销，在所属的区域内传播
+2         Network-LSA            由DR产生，描述本网段的链路状态，在所属的区域内传播
+3         Network-summary-LSA    由ABR产生，描述区域内某个网段的路由，并通告给发布或接收此LSA的非Totally STUB或NSSA区域。
+4         ASBR-summary-LSA       由ABR产生，描述到ASBR的路由，通告给除ASBR所在区域的其他相关区域
+5         AS-external-LSA        由ASBR产生，描述到AS外部的路由，通告到所有的区域（除了STUB区域和NSSA区域）
+6         
+7         NSSA LSA               由ASBR产生，描述到AS外部的路由，仅在NSSA区域内传播
 
 OSPF使用两个知名的组播地址：224.0.0.5及224.0.0.6
 所有的OSPF路由器的接口都会侦听发向224.0.0.5的报文，在此基础上，DR/BDR会侦听224.0.0.6
