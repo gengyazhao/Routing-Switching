@@ -12,34 +12,24 @@
 
 6.用户client001以STelnet方式登录SSH服务器。
 
-1.在服务器端生成本地密钥对 
-<HUAWEI> system-view
-[HUAWEI] sysname SSH_Server
-[SSH_Server] dsa local-key-pair create
-Info: The key name will be: HUAWEI_Host_DSA.                                                                                
-Info: The key modulus can be any one of the following : 1024, 2048.                                                            
-Info: If the key modulus is greater than 512, it may take a few minutes.        
-Please input the modulus [default=2048]:                                        
-Info: Generating keys...                                                        
-Info: Succeeded in creating the DSA host keys.
+交换机SSH配置：
+#创建秘钥
+[SW]dsa local-key-pair create
 
-2.在服务器端创建SSH用户 
-# 配置VTY用户界面。
-[SSH_Server] user-interface vty 0 4
-[SSH_Server-ui-vty0-4] authentication-mode aaa
-[SSH_Server-ui-vty0-4] protocol inbound ssh
-[SSH_Server-ui-vty0-4] quit
-# 新建用户名为client001的SSH用户，且认证方式为Password。
-[SSH_Server] aaa
-[SSH_Server-aaa] local-user client001 password irreversible-cipher Huawei@123
-[SSH_Server-aaa] local-user client001 privilege level 3
-[SSH_Server-aaa] local-user client001 service-type ssh
-[SSH_Server-aaa] quit
-[SSH_Server] ssh user client001 authentication-type password
-3.SSH服务器端开启STelnet服务功能 
-[SSH_Server] stelnet server enable
-4.配置SSH用户client001的服务方式为STelnet 
-[SSH_Server] ssh user client001 service-type stelnet
+#配置SSH认证类型（密码/其他）
+[SW]ssh user user1 authentication-type password
+[SW]ssh user user1 service-type stelnet
+[SW]stelnet server enable
+#配置认证模式
+[SW]user-interface v 0 4
+[SW]authentication-mode aaa
+[SW]protocol inbound ssh
+#配置本地用户信息
+[SW]aaa
+[SW]local-user user1 password cipher Huawei@123
+[SW]local-user user1 privilege level 15
+[SW]local-user user1 service-type ssh
+[SW]
 
 
 
@@ -48,6 +38,10 @@ Info: Succeeded in creating the DSA host keys.
 配置举例：
 #生成本地DSA密钥对
 [SW108]dsa local-key-pair create
+#使能STelnet服务功能
+[SW108]stelnet server en
+
+
 #进入VTY 5用户界面视图。
 [SW108]user-i v 5
 #用户级别为15级
@@ -57,10 +51,16 @@ Info: Succeeded in creating the DSA host keys.
 #配置VTY 5的用户界面支持SSH协议
 [SW108-ui-vty5]pro in ssh
 [SW108-ui-vty5]q
+
+
 #创建SSH用户admin
 [SW108]ssh user admin
 #配置SSH用户admin的认证方式为Password认证
 [SW108]ssh user admin authentication-type password
+#配置SSH用户admin的服务方式为STelnet
+[SW108]ssh user admin service-type stelnet
+
+
 #进入AAA视图
 [SW108]aaa
 #当用户使用Password认证方式时，需要在AAA视图下配置与SSH用户同名的本地用户
@@ -72,10 +72,5 @@ Info: Succeeded in creating the DSA host keys.
 [SW108-aaa]local-user admin privilege level 15
 [SW108-aaa]q
 
-#配置SSH用户admin的服务方式为STelnet
-[SW108]ssh user admin service-type stelnet
-
-#使能STelnet服务功能
-[SW108]stelnet server en
 
 
