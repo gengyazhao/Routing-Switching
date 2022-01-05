@@ -1,0 +1,26 @@
+配置端口安全
+
+#配置安全MAC功能
+port-security enable
+#配置端口安全保护动作
+port-security protect-action shutdown
+#配置端口安全动态MAC学习限制数量
+port-security max-mac-num 5
+#配置MAC地址老化时间
+port-security aging-time 1000
+
+MAC地址表
+
+#配置接口MAC地址学习优先级
+#配置接口学习MAC地址的优先级，缺省情况下，接口学习MAC地址的优先级为0，数值越大优先级越高
+mac-learning priority 3
+#配置不允许相同优先级的接口发生MAC地址漂移
+undo mac-learning priority 3 allow-flapping
+#配置全局MAC地址漂移检测
+mac-address flapping detection
+#配置基于VLAN的MAC地址漂移检测
+vlan 2
+loop-detect eth-loop block-time 100 retry-times 3
+
+
+
