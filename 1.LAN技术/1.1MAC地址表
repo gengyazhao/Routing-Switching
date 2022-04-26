@@ -12,6 +12,9 @@ MAC地址表组成：动态表项、静态表项、黑洞表项
 配置黑洞MAC地址后，源MAC地址或目的MAC地址是该MAC的报文将会被丢弃。
 
 display mac-address 查看MAC地址表
+mac-address static xxxx-xxxx-xxxx g0/0/2 vlan 1   配置静态MAC表项
+mac-address blackhole xxxx-xxxx-xxxx    配置黑洞MAC表项
+mac-address aging-time 400    配置动态MAC表项的老化时间
 
 
 
