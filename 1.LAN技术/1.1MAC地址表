@@ -18,12 +18,26 @@ mac-address aging-time 400    配置动态MAC表项的老化时间
 
 
 
+端口安全是指通过将接口学习到的动态MAC地址转换为安全MAC地址，阻止非法用户通过本接口和交换机通信，从而增强设备的安全性。
+安全安全MAC地址分类：
+1、安全动态MAC地址：使能端口安全而未使能Sticky MAC功能时的MAC地址。
+2、安全静态MAC地址：使能端口安全时手工配置的静态MAC地址。
+3、Sticky MAC地址：使能端口安全后又同时使能Sticky MAC功能后转换到的MAC地址。
 
+接口使能端口安全功能时，接口上之前学习到的动态MAC地址表项将被删除，之后学习到的MAC地址将变为安全动态MAC地址。
+接口使能Sticky MAC功能时，安全动态MAC将转化为Sticky MAC地址，之后学习到的MAC地址也变为Sticky MAC地址。即使配置了老化时间，Sticky MAC也不会被老化。
+接口去使能端口安全功能时，接口上的安全动态MAC地址将被删除，重新学习动态MAC地址。
+接口去使能Sticky MAC功能时，接口上的Sticky MAC地址会转换为安全动态MAC地址。
 
+端口保护动作：Restrict/Protect/Shutdown
+Restrict：丢弃源MAC地址不存在的报文并上报告警。
+Protect：只丢弃源MAC地址不存在的报文，不上报告警。
+shutdown：接口状态被设置为error-down，并上报告警。
 
 配置端口安全
 
-#配置安全MAC功能
+配置安全MAC功能
+#接口视图下使能端口安全功能
 port-security enable
 #配置端口安全保护动作
 port-security protect-action shutdown
@@ -31,6 +45,15 @@ port-security protect-action shutdown
 port-security max-mac-num 5
 #配置MAC地址老化时间
 port-security aging-time 1000
+
+配置Sticky MAC功能
+#接口视图下使能端口安全功能
+port-security enable
+#使能接口Sticky MAC功能
+port-security mac-address sticky
+
+
+
 
 MAC地址表
 
