@@ -1,0 +1,19 @@
+MAC地址漂移是指设备上一个VLAN内有两个端口学习到同一个MAC地址，后学习到的MAC地址表项覆盖原MAC地址表项的现象。
+
+避免MAC地址漂移的方法：
+提高接口MAC地址学习优先级；
+不允许相同优先级的接口发生MAC地址表项覆盖。
+
+MAC地址漂移检测：
+利用MAC地址出接口跳变的现象，检测MAC地址是否发生漂移的功能。
+MAC地址防漂移配置：
+#配置接口MAC地址学习优先级,缺省情况下，接口学习到的MAC地址优先级为0，数值越大优先级越高
+mac-learning priority 3
+#配置不允许相同优先级的接口发生MAC地址漂移
+undo mac-learning priority 3 allow-flapping
+#配置全局MAC地址漂移检测
+mac-address flapping detection
+
+#配置基于VLAN的MAC地址漂移检测
+vlan 2
+loop-detect eth-loop block-time 100 retry-times 3
