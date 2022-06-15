@@ -1,5 +1,11 @@
 STP 802.1D 标准是所有VLAN共用一棵生成树，不管交换网络中存在多少个VLAN，STP计算的结果都是一棵生成树。
 
+RSTP快速生成树协议Rapid Spanning Tree Protocol ，RSTP完全向下兼容STP协议，除了和传统的STP协议一样具有避免回路、动态管理冗余链路的功能外，RSTP极大的缩短了拓扑收敛时间。
+RSTP主要功能：1、发现并生成局域网的一个最佳树型拓扑结构；2、发现拓扑故障并随之进行恢复，自动更新网络拓扑结构，启用备份链路，同时保持最佳树型结构。
+
+RSTP和STP存在同一个缺陷：由于局域网内所有的VLAN共享一棵生成树，因此无法在VLAN间实现数据流量的负载均衡，链路被阻塞后将不承载任何流量，还有可能造成部分VLAN的报文无法转发。
+MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。
+
 perVALN生成树协议，一个VLAN一棵生成树，每个VLAN都有其自己独立的生成树，基于不同的VLAN，可以进行不同的优先级、接口开销的配置从而实现阻塞不同的端口。实现不同的VLAN流量分流的目的。
 弊端是网络中的交换机需要为每一个VLAN单独进行生成树计算，当VLAN数量较多时，生成树的数量也非常多，网络每一次震荡都将触发交换机们的重新计算，相当耗资源。
 
@@ -9,7 +15,7 @@ MSTP（Multiple Spanning Tree Protocol）多生成树协议，是IEEE 802.1S标�
 MST Region(Multiple Spanning Tree Region）：一个域包含域名（Configuration Name）、修订级别（Revision Level）、格式选择器（Configuration Identifier Format Selector）、
 Vlan与实例的映射关系（mapping of VIDs to spanning trees)等信息。只有上述四者都一样且相互连接的交换机才认为在同一个域内。
 
-MSTI（Multiple Spanning Tree Instance）：MSTP的非实例0的其他实例。
+MSTI（Multiple Spanning Tree Instance）多生成树实例：每棵生成树叫做一个多生成树实例MSTI，每个域叫做一个MST域。
 
 CST（Common Spanning Tree）公共生成树：是连接交换网络内所有MST域的一棵生成树。如果把每个MST域看作是一个节点，CST就是这些节点通过STP或RSTP协议计算生成的一棵生成树。
 
@@ -23,3 +29,4 @@ CIST Root 总根：总根是一个全局概念，对于所有互连的运行STP/
 
 同一个域内所有交换机都有相同的MST域配置。缺省时，域名就是交换机的桥MAC地址，修订级别等于0，格式选择器等于0，所有的VLAN都映射到实例0上。
 同一个域内的交换机，VLAN的映射必须完全一致。
+
