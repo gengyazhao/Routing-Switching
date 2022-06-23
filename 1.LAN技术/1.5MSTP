@@ -30,3 +30,58 @@ CIST Root 总根：总根是一个全局概念，对于所有互连的运行STP/
 同一个域内所有交换机都有相同的MST域配置。缺省时，域名就是交换机的桥MAC地址，修订级别等于0，格式选择器等于0，所有的VLAN都映射到实例0上。
 同一个域内的交换机，VLAN的映射必须完全一致。
 
+主桥（Master Bridge）也就是IST Master，它是域内距离总根最近的交换设备。如果总根在MST域中，则总根为该域的主桥。
+端口角色：同RSTP，MSTP中定义了根端口、指定端口、Alternate端口、Backup端口和边缘端口。
+端口状态：同RSTP，MSTP定义的端口状态有Forwarding，Learning，Discarding
+
+MSTP拓扑计算：
+CIST的计算：经过比较配置消息后，在整个网络中选择一个优先级最高的交换设备作为CIST的树根。在每个MST域内MSTP通过计算生成IST；
+同时MSTP将每个MST域作为单台交换设备对待，通过计算在MST域间生成CST。CST和IST构成了整个交换设备网络的CIST。
+
+MSTI的计算：
+在MST域内，MSTP根据VLAN和生成树实例的映射关系，针对不同的VLAN生成不同的生成树实例。每棵生成树独立进行计算，计算过程与STP计算生成树的过程类似。
+
+MSTP对拓扑变化的处理：
+MSTP拓扑变化处理与RSTP拓扑变化处理过程类似。
+
+MSTI的特点：
+每个MSTI独立计算自己的生成树，互不干扰
+每个MSTI的生成树计算方法与STP基本相同
+每个MSTI的生成树可以有不同的根，不同的拓扑
+每个MSTI在自己的生成树内发送BPDU
+每个MSTI的拓扑通过命令配置决定
+每个端口在不同MSTI上的生成树参数可以不同
+每个端口在不同MSTI上的角色、状态可以不同
+
+在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：
+在MST域内，沿着其对应的MSTI转发
+在MST域间，沿着CST转发
+
+
+配置MSTP基本功能
+#进入MST域视图
+stp region-configuration
+
+#配置MST域的域名
+region-name RG1
+
+#配置多生成树实例和VLAN的映射关系
+instance 1 vlan 2 to 10
+
+#激活MST域的配置，使域名、VLAN映射表和MSTP修订级别生效
+instance 2 vlan 11 to 20
+active region-configuration
+
+#配置当前设备为根桥设备
+stp instance 1 root primary
+
+#配置当前交换设备为备份根桥设备
+stp instance 2 root secondary
+
+#配置该交换机的端口路径开销值的计算方法为华为计算方法
+stp pathcost-standard legacy
+
+#启动MSTP
+stp enable
+
+
