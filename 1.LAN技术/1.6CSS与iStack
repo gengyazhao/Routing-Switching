@@ -68,5 +68,34 @@ iStack基本概念
 分裂后，如果原堆叠主和堆叠备不在同一个堆叠系统中，备交换机升为主，网络中出现配置相同的两组堆叠系统。
 
 
+MAD多主检测（Multi-Active Detection），是一种检测和处理堆叠分裂的协议。链路故障导致堆叠系统分裂后，MAD可以实现堆叠分裂的检测、冲突处理和故障恢复，降低堆叠分裂对业务的影响。
+MAD检测方式有两种：直连检测方式和代理检测方式。在同一个堆叠系统中，两种检测方式互斥，不可以同时配置。
 
 
+堆叠配置
+1、通过堆叠卡连接方式组建堆叠
+//配置成员交换机的堆叠优先级。缺省情况下，成员交换机的堆叠优先级为100
+[SwitchA] stack slot 0 priority 200
+//配置设备的堆叠ID
+[SwitchB] stack slot 0 renumber 1
+[SwitchC] stack slot 0 renumber 2
+
+2、通过业务口连接方式组建堆叠
+[SwitchA] interface stack-port 0/1
+//配置业务口为物理成员端口并将其加入到逻辑堆叠端口中。交换机B、C同理。
+[SwitchA-stack-port0/1]port interface gigabitethernet 0/0/27 enable
+[SwitchA]interface stack-port 0/2
+[SwitchA-stack-port0/2]port interface gigabitethernet 0/0/28 enable
+//配置SwitchA的堆叠优先级为200
+[SwitchA]stack slot 0 priority 200
+////配置设备的堆叠ID
+[SwitchB]stack slot 0 renumber 1
+[SwitchC]stack slot 0 renumber 2
+
+CSS基本概念
+主交换机：负责管理整个集群。集群中只有一台主交换机。
+备交换机：主交换机的备份交换机。当主交换机故障时，备交换机会接替原主交换机的所有业务。集群中只有一台备交换机。
+集群ID：即CSS ID，用来标识和管理成员交换机。集群中成员交换机的集群ID是唯一的。
+集群优先级：即Priority，是成员交换机的一个属性，主要用于角色选举过程中确定成员交换机的角色，优先级值越大表示优先级越高，优先级越高当选为主交换机的可能性越大。
+
+不同于iStack可以多台设备堆叠，对于CSS集群，集群中只能有一主一备两台交换机。
