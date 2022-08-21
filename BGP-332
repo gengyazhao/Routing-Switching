@@ -13,6 +13,7 @@ BGP概述：
 易于扩展
 
 
+
 边界网关协议BGP是一种用于自治系统AS之间的动态路由协议，是一种外部网关协议EGP，与OSPF、RIP等内部网关协议IGP不同，
 BGP着眼点不在于自动发现网络拓扑，而在于AS之间选择最佳路由和控制路由的传播。
 
@@ -28,8 +29,14 @@ AS内部：BGP在AS内学到的路由不再通告给AS内的BGP邻居，避免�
 
 BGP提供了丰富的路由策略，能够对路由实现灵活的过滤和选择。
 BGP提供了防止路由振荡的机制，有效提高了Internet网络的稳定性。
-BGP易于扩展，能够适应网络新的发展。主要是通过TLV进行扩展。
+BGP支持多协议的扩展，能够适应网络新的发展。主要是通过TLV进行扩展。
+BGP能够承载大批量的路由前缀
+BGP支持MPLS/VPN的应用，传递客户VPN路由
 
+AS_Path,用于选择最佳路由，防止环路
+
+运行BGP的路由器被称为BGP Speaker。两台BGP路由器需建立对等体关系才能交互BGP路由。存在两种类型的BGP对等体关系————EBGP及IBGP。
+通过部署MPLS解决BGP路由黑洞问题。
 
 
 BGP工作原理——报文类型
@@ -38,4 +45,13 @@ Update报文：交换路由信息
 Keepalive报文：保持邻居关系
 Notification报文：差错通知
 Route-Refresh报文：用于在改变路由策略后请求对等体重新发送路由信息
+
+BGP的邻居状态机
+Peer状态名称   发什么包           在做什么
+Idle          尝试建立TCP连接     开始准备TCP的连接并监视远程peer启动TCP连接，启用BGP时，要准备足够的资源
+Connect       发TCP包            正在进行TCP连接，等待完成中，认证都是在TCP建立期间完成的。如果TCP连接不上则进入Active状态，反复尝试连接
+Active        发TCP包            TCP连接没建立成功，反复尝试TCP连接
+OpenSent      发Open包           TCP连接建立已经成功，开始发送Open包，Open包携带参数协商对等体的建立。
+OpenConfirm   发Keepalive包      参数、能力特性协商成功，自己开始发送Keepalive包，等待对方的Keepalive包
+Established   发Update包         已经收到对方的Keepalive包，双方能力特性一致，开始使用Update通告路由信息。
 
