@@ -1,0 +1,57 @@
+注意：Eth-Trunk接口中只能添加GE接口、XGE接口,删除Eth-Trunk时，Eth-Trunk中不能有成员接口
+
+同一个Eth-Trunk的所有成员接口的以上属性必须保持一致，不能单独修改。修改Eth-Trunk的以上属性，它的所有成员接口的对应属性也相应改变。
+
+在接口加入Eth-Trunk之前，建议首先使用shutdown（接口视图）命令关闭接口。在两端的接口都加入Eth-Trunk后，使用undo shutdown命令开启接口，否则可能会出现流量中断或短暂广播风暴的现象。
+在接口从Eth-Trunk中删除之前，建议首先使用shutdown（接口视图）命令将一个成员接口关闭再使用undo eth-trunk命令将接口从Eth-Trunk中删除，按照此方式删除其它接口。
+
+静态LACP模式与手工负载分担模式的主要区别为：静态LACP模式有备份链路，而手工负载分担模式所有成员接口均处于转发状态，分担负载流量。
+
+sys
+int eth-trunk 10
+trunkport g0/0/11 g0/0/13
+trunkport g0/0/1 t g0/0/4
+
+sys
+int eth-trunk 10
+q
+int g0/0/1
+eth-trunk 2
+
+查看eth-trunk接口的配置信息：
+dis eth-trunk
+dis eth-trunk 10
+dis int eth-trunk 10
+
+
+Eth-Trunk：一般指同一设备的链路聚合，一台交换机将多个接口捆绑，形成一个Eth-Trunk接口。
+Eth-Trunk优点
+负载分担：通过Trunk接口可以实现负载分担。在一个Eth-Trunk接口内，可以实现流量负载分担。
+提高可靠性：当某个成员接口连接的物理链路出现故障时，流量会切换到其他可用的链路上，从而提高整个Trunk链路的可靠性。
+增加带宽：Trunk接口的总带宽是各成员接口带宽之和
+
+E-Trunk（Enhanced Trunk）：一般指跨设备链路聚合，是一种实现跨设备链路聚合的机制，基于LACP（单台设备链路聚合的标准）进行了扩展，能够实现多台设备间的链路聚合。
+从而把链路可靠性从单板级提高到了设备级。
+E-Trunk机制主要应用于CE双归接入VPLS、VLL、PWE3网络时，CE与PE间的链路保护以及对PE设备节点故障的保护。
+在没有使用E-Trunk前，CE通过Eth-Trunk链路只能单归到一个PE设备。如果Eth-Trunk出现故障或者PE设备故障，CE将无法与PE设备继续进行通信。
+使用E-Trunk后，CE可以双归到PE上,从而实现设备间保护。
+
+如果两台设备做的CSS集群，那么两台设备可以看作是一台设备，这两台物理设备之间的链路聚合是通过Eth-trunk实现的，相当于同一台设备的链路聚合，而非跨设备的链路聚合。
+
+只有静态LACP模式的Eth-Trunk可以加入E-Trunk。一个Eth-Trunk只能加入一个E-Trunk。
+如果该Eth-Trunk已经加入其他E-Trunk时，必须退出原有E-Trunk，才能加入新的E-Trunk。
+一个E-Trunk最多可以加入64个静态LACP模式的Eth-Trunk。
+
+举例：将eth-trunk 10 加入ID为10的e-trunk
+sys
+int eth-trunk 10
+e-trunk 10
+
+
+只能对已经加入E-Trunk的Eth-Trunk执行e-trunk mode XXX。当Eth-Trunk退出E-Trunk时，该配置将自动清除。
+sys
+int eth-trunk 10
+e-trunk mode auto|force-master|force-backup
+
+
+
