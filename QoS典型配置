@@ -36,3 +36,44 @@ if-match acl 3003
 q
 
 3、配置流行为，对匹配到的报文重新标记优先级
+# 配置流行为dbserver，匹配到目的IP地址为192.168.1.10的报文，优先级标记为4。
+# 配置流行为mailserver，匹配到目的IP地址为192.168.1.11的报文，优先级标记为3。
+# 配置流行为ftpserver，匹配到目的IP地址为192.168.1.12的报文，优先级标记为2。
+traffic behavior dbserver
+remark local-precedence 4
+q
+traffic behavior mailserver
+remark local-precedence 3
+q
+traffice behavior ftpserver
+remark local-precedence 2
+q
+
+4、配置流策略，绑定流策略和流行为
+traffic policy policy1
+classifier dbserver behavior dbserver
+classifier mailserver behavior mailserver
+classifier ftpserver behavior ftpserver
+q
+
+5、将流策略应用到GE1/0/1进接口上，对进入设备的报文按照流策略标记优先级
+int g1/0/1
+traffic-policy policy1 inbound
+q
+
+6、配置GE1/0/2接口的队列调度方式为PQ，严格按照队列优先级的高低顺序进行调度
+int g1/0/2
+qos pq
+q
+
+验证配置结果
+dis traffic policy user-defined
+
+
+对于S2320-EI、S2350-EI、S5300-LI、S5300-SI、S5320-LI、S5320-SI、S5330-SI、S5336-S和S6320-SI设备，请采用如下方式配置：
+qos schedule-profile pqtemplate
+qos pq
+q
+int g1/0/2
+qos schedule-profile pqtemplate
+q
