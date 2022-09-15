@@ -5,6 +5,18 @@
 在接口加入Eth-Trunk之前，建议首先使用shutdown（接口视图）命令关闭接口。在两端的接口都加入Eth-Trunk后，使用undo shutdown命令开启接口，否则可能会出现流量中断或短暂广播风暴的现象。
 在接口从Eth-Trunk中删除之前，建议首先使用shutdown（接口视图）命令将一个成员接口关闭再使用undo eth-trunk命令将接口从Eth-Trunk中删除，按照此方式删除其它接口。
 
+interface XGigabitEthernet0/0/3                                                 
+ undo negotiation auto                                                          
+ eth-trunk 34    
+interface XGigabitEthernet0/0/4                                                 
+ undo negotiation auto                                                          
+ eth-trunk 34                                                                
+                                                                          
+interface Eth-Trunk34                                                           
+ port link-type access                                                          
+ port default vlan 34                                                           
+ mode lacp 
+
 静态LACP模式与手工负载分担模式的主要区别为：静态LACP模式有备份链路，而手工负载分担模式所有成员接口均处于转发状态，分担负载流量。
 
 sys
