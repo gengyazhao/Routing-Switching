@@ -1,0 +1,6 @@
+undo negotiation auto
+
+Error: This port or this mode doesn't support this command.
+
+华为S6700交换机，在配置XG接口时报错，这个端口或模式不支持这个命令。
+原因是插入了10G光模块，更换成1.25G光模块就可以配置成功。
