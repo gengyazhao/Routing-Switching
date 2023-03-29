@@ -1,0 +1,26 @@
+#FTP服务器IP
+ftp x.x.x.x
+#FTP USER
+admin
+#FTP PWD
+adminxxx
+#get 文件名
+get ***
+get ***
+q
+
+#设置交换机启动软件包s9300-v200r010c00spc600.cc
+startup system-software xxx.cc
+#设置交换机启动软件包补丁s9300series-v200r010sph022.pat
+startup patch xxx.pat
+#显示交换机启动设置
+dis star
+#设置交换机启动配置文件
+startup saved-configuration vrpcfgnew.cfg 
+reboot
+y
+y
+
+
+check startup crc next
+license active license.dat
