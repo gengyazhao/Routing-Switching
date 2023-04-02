@@ -1,0 +1,20 @@
+PPP/MP
+POS/IP-Trunk
+PPPoE
+
+Ethernet接口，以太网接口类型：
+10M以太网（标准以太网）
+100M以太网（快速以太网）
+1000M以太网（千兆以太网）
+10G太网（万兆以太网）
+100G以太网（100G以太网）
+
+T：表示双绞线
+TX：表示2对高质量的双绞线
+FX：表示2根光纤
+
+POS接口
+Packet Over Sonet/SDH ：在SONET/SDH上承载IP包或其他数据包的传输技术。
+POS将长度可变的数据包直接映射进SONET同步载荷中，使用SONET物理层传输标准，提供了一种高速、可靠、点到点的数据连接。采用光纤进行传输。
+OC-n：Optical Carrier level n，光载体等级，是光纤传输的一种单位，最小的单位为OC-1，其传输数据量约为51.84Mbps
+STM ：Synchronous Transport Module，同步传输模块。
