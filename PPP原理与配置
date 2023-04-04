@@ -1,0 +1,12 @@
+PPP基本概念
+PPP协议在TCP/IP协议栈中位于数据链路层，是目前应用最广泛的点到点链路层协议。
+PPP的三个组件：数据封装方式、链路控制协议LCP（Link Control Protocol）、网络层控制协议NCP（Network Control Protocol）
+
+
+
+LCP协议：定义建立、协商和测试数据链路层连接的方法。
+PAP认证协议
+CHAP认证协议
+NCP协议:包含一组协议，用于对不同的网络层协议进行连接建立和参数协商。
+MP基本原理
+PPP/MP配置
