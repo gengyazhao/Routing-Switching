@@ -1,0 +1,51 @@
+S9300 dhcp中继
+int x 1/0/24
+p l a
+v 24
+p 10 1/0/24
+q
+int vlanif 24
+description to_xxx
+ip add x.x.x.x 24
+q
+
+
+dhcp enable
+dhcp server group group1
+dhcp-server 172.30.42.x 0
+quit
+interface Vlanif 24
+dhcp select relay
+dhcp relay server-select group1
+quit
+
+
+
+
+
+
+
+
+
+
+CE6810LI dhcp中继
+
+#使能DHCP服务
+#创建DHCP服务器group
+#为DHCP服务器group组添加DHCP服务器ip
+
+dhcp enable
+dhcp relay server group group1
+server x.x.x.x 0
+quit
+
+#配置接口绑定dhcp服务器group组
+v 24
+port 10 1/0/24
+q
+int valnif 24
+ip add x.x.x.x 24
+dhcp relay binding server group group1
+q
+commit
+
