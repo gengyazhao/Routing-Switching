@@ -1,0 +1,7 @@
+DHCP：动态主机配置协议Dynamic Host Configuration Protocol
+
+DHCP主要包括以下三种角色：服务器DHCP Server、中继器DHCP Relay、客户端DHCP Client
+
+DHCP客户端向DHCP服务器动态地请求网络配置信息（IP地址、子网掩码、缺省网关等网络参数），DHCP服务器根据策略返回相应的配置信息。
+如果DHCP服务器和客户端不在同一个网段，则需要通过DHCP中继来转发报文，这样可以避免在每个网段内都部署DHCP服务器。
+
