@@ -5,3 +5,50 @@ DHCP主要包括以下三种角色：服务器DHCP Server、中继器DHCP Relay�
 DHCP客户端向DHCP服务器动态地请求网络配置信息（IP地址、子网掩码、缺省网关等网络参数），DHCP服务器根据策略返回相应的配置信息。
 如果DHCP服务器和客户端不在同一个网段，则需要通过DHCP中继来转发报文，这样可以避免在每个网段内都部署DHCP服务器。
 
+
+
+某企业有两个处于同一网络内的办公室，为了节省资源，两个办公室内的主机由SwitchB作为DHCP服务器统一分配IP地址。
+办公室1所属的网段为10.1.1.0/25，主机都加入VLAN10，办公室1的主机只使用DNS服务，不使用NetBIOS服务，地址租期为10天；
+办公室2所属的网段为10.1.1.128/25，主机都加入VLAN20，办公室2的主机使用DNS服务和NetBIOS服务，地址租期为2天。
+在SwitchB上配置全局地址池，并采取动态地址分配方式为两个办公室的主机分配IP地址
+
+vlanif10:10.1.1.1/25
+vlanif20:10.1.1.129/25
+
+办公室1 Network：10.1.1.0/25
+办公室2 Network：10.1.1.128/25
+
+NetBIOS Server:10.1.1.4/25
+DNS Server:10.1.1.2/25
+
+配置思路：
+1.在DHCP服务器上创建两个全局地址池，并配置各自的地址池相关属性，实现根据不同需求，为办公室1和办公室2动态分配地址。
+2.在DHCP服务上配置VLANIF接口下本地DHCP服务器的地址分配方式，实现DHCP服务器从全局地址池中给客户端分配IP地址。
+
+#使能DHCP服务
+sys
+dhcp en
+commit
+
+#配置IP地址池pool1
+sys
+ip pool pool1
+gateway-list 10.1.1.1
+network 10.1.1.0 mask 255.255.255.128
+dns-list 10.1.1.2
+excluded-ip-address 10.1.1.2
+excluded-ip-address 10.1.1.4
+lease day 10
+commit
+
+#配置IP地址池pool2
+sys
+ip pool pool2
+gateway-list 10.1.1.129
+network 10.1.1.128 mask 255.255.255.128
+dns-list 10.1.1.2
+nbns-list 10.1.1.4
+lease day 2
+commit
+
+dis ip pool
