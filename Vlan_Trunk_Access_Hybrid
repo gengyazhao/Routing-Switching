@@ -6,7 +6,7 @@ VLAN ID，其取值范围为1～4094，VLAN工作于OSI参考模型的第二层�
 二层接口链路类型：Access、Trunk、hybrid
 Access
 Access接口只能加入一个VLAN，该VLAN就是接口的缺省VLAN。
-Access接口只能发送不带标记的数据帧（也就是untagged帧），通常也只接收untagged帧。常用于连接PC、服务器、路由器或其他终端。
+Access接口只能发送不带标记的数据帧（也就是untagged帧），通常也只接收untagged帧以及打了缺省VLAN的标记帧。常用于连接PC、服务器、路由器或其他终端。
 
 Access口接收帧：
 如果该帧是Untagged帧，则接收帧并打上接口的PVID（也就是Access接口的default vlan 或缺省vlan）
@@ -47,10 +47,7 @@ port hybrid untagged vlan 10
 
 
 
-接口的链路类型总共有4种，分别为：Access、Trunk、Hybrid、Dot1q-tunnel。
-在修改链路类型时，如果接口上VLAN的配置不是缺省值，需要先把接口上VLAN的配置恢复为缺省值，然后再修改链路类型。
-
-VLAN 1是系统自带的VLAN，不需要创建，也不可以删除。在缺省情况下，默认所有接口都加入到默认的VLAN  1中。
+ 
 
 默认Trunk口是允许vlan 1通过的，trunk 端口禁用valn 1
 un port trunk allow-pass v 1
