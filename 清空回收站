@@ -1,0 +1,5 @@
+删除用户当前工作路径下回收站中的文件
+reset recycle-bin 
+
+直接删除log文件，不进回收站，不提示
+delete /unreserved /quiet logfile/log*
