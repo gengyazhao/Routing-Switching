@@ -1,0 +1,5 @@
+sys
+kpi all monitor disable
+
+cd kpistat
+delete /un /q *
