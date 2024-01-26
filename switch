@@ -1,3 +1,8 @@
+CE交换机V300版本后默认开启VTY安全策略，一个以上的用户同时登录时，后面登录的用户会被要求强制修改密码，否则不能登录。
+关闭如下策略即可解决：
+user-interface vty security-policy disable
+
+
 备份交换机已保存的启动配置文件
 copy flash:/vrpcfg.zip flash:/cfgbackup/zip
 Console接口：
