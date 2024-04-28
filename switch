@@ -2,6 +2,10 @@ CE交换机V300版本后默认开启VTY安全策略，一个以上的用户同�
 关闭如下策略即可解决：
 user-interface vty security-policy disable
 
+交换机高版本默认关闭telnet服务，默认关闭所有接口的telnet访问服务
+undo telnet server disable
+undo telnet server-source all-interface
+
 
 备份交换机已保存的启动配置文件
 copy flash:/vrpcfg.zip flash:/cfgbackup/zip
