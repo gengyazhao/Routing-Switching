@@ -5,3 +5,9 @@ ip route-static 1.1.1.1 32 1.1.1.254
 3、黑洞路由-路由聚合
 当聚合路由R2，转发给R1不存在的网段流量时，并且R1配置了默认路由。会导致环路，此时需要在R1上配置一条指向Null0的路由
 ip route-static 192.168.0.0 16 null0
+
+动态路由协议分为：内部网关协议（IGP）Interior Gateway Protocol和外部网关协议（EGP）Exterior Gateway Protocol
+内部网关协议IGP：在一个自治系统内部运行。常见的IGP协议有：RIP、OSPF、ISIS
+外部网关协议EGP：运行于不同自治系统之间。BGP路由协议几乎是目前业界唯一在使用的EGP。
+自治系统（AS）指的是一个独立自治的、自我管理的路由选择域。
+
