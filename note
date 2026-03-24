@@ -11,10 +11,12 @@ STP
 MSTP
 Smart Link
 Monitor Link
-链路聚合：
-Eth-trunk
-手工负载分担（Manual load-balance）
-LACP
+链路聚合：全称以太网链路聚合技术（Link Aggregation）,是一种端口捆绑、链路捆绑技术，简单来说就是把两条或者多条物理链路，聚合成一条虚拟的逻辑链路Eth-Trunk，
+主要解决2个问题：1、在不增加硬件投入，不增加成本的情况下增加带宽，解决带宽不足的问题；2、解决单点故障问题，一旦一条物理链路发生故障，其他链路仍能正常工作，从而保障网络的可靠性。
+如果不做链路聚合，直接交换机之间多连几根线。就会造成环路，导致网络风暴。
+此时如果开了STP生成树协议，就会阻塞掉其他端口，仍然只保留一条链路转发数据，起不到链路聚合的功能。
+华为交换机上Eth-trunk支持两种工作方式：手工负载分担（Manual load-balance）和LACP
+
 OSPF
 动态路由协议根据作用范围可分为：IGP（RIP、OSPF、ISIS）和EGP（BGP）
 IGP：内部网关协议Interior Gateway Protocol，在一个自治系统（AS）内部运行
