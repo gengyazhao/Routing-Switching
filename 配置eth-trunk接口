@@ -20,9 +20,46 @@ eth-trunk 1
 #配置eth-trunk成员链路的负载分担模式：load-balance { dst-ip | src-ip | src-dst-ip | dst-mac | src-mac | src-dst-mac | round-robin | enhanced [resilient] profile <profile-name> }
 eth-trunk 1
 load-balance ***
-#为保证eth-trunk的状态和带宽，
+#为保证eth-trunk的状态和带宽，可以设置活动接口数量的阈值（缺省值为1），当活动链路小于下限阈值时，eth-trunk接口状态转为down
+least active-linknumber *
 
+LACP模式下，需要手工创建eth-trunk，手工加入eth-trunk成员接口，但是，由LACP协议协商确定活动接口和非活动接口。
+LACP模式也称为M:N模式，即M条链路处于活动状态，N条链路处于非活动状态作为备份链路。当M条链路中有链路出现故障时，系统会从备份链路中选择优先级最高的接替出现故障的链路。
+LACP模式与手工负载分担模式的主要区别是：LACP模式有备份链路。而手工负载分担模式没有备份链路，所有成员接口均处于转发状态，分担负载流量。
+LACP模式中优先级值越小，优先级越高，为主动端。优先级低的一端为被动端，若优先级一样时，则MAC地址小的为主动端。
+#创建eth-trunk，并将工作方式修改为LACP
+int eth-trunk 1
+mode lacp-static#缺省情况下，为手工负载分担方式。
+#添加物理接口到eth-trunk 1中
+int g0/0/1
+eth-trunk 1
+int g0/0/2
+eth-trunk 1
+int g0/0/3
+eth-trunk 1
+#配置eth-trunk成员链路的负载分担模式：load-balance { dst-ip | src-ip | src-dst-ip | dst-mac | src-mac | src-dst-mac | round-robin | enhanced [resilient] profile <profile-name> }
+eth-trunk 1
+load-balance ***
+#配置设备LACP优先级,缺省情况下，系统LACP优先级32768.
+lacp priority *
+#配置接口LACP优先级,接口优先级（值越小）越高越有可能成为活动的成员接口
+int g0/0/1
+lacp priority *
+#配置活动接口上限阈值,缺省状态下，活动接口上限阈值为8
+eth-trunk 1
+max active-linknumber *
+#配置活动接口下限阈值，缺省状态下，活动接口下限阈值为1
+eth-trunk 1
+least active-linknumber *
+#使能LACP抢占，配置抢占等待时间。缺省状态下，lacp抢占功能处于禁止状态，lacp抢占等待时间为30秒。
+#使能LACP抢占功能可以保持接口LACP优先级最高的接口为活动接口。例如：当一条高优先级的接口因故障切换为非活动状态而后又恢复时，如果使能了抢占，则高优先级接口将重新成为活动接口;如果未使能抢占，该接口不能重新成为活动接口。
+eth-trunk 1
+lacp preempt enable
+lacp preempt delay **(time)
 
+#由于eth-trunk1聚合接口需要承载多个VLAN的二层流量，因此需配置为trunk类型。注意一旦聚合接口配置完成后，针对该逻辑接口的相关配置就在inteface eth-trunk中进行，也就是在产生的聚合接口中完成,而不是在GE0/0/23或GE0/0/24口的接口中进行。
+#查看配置
+dis eth-trunk 1
 
 
 注意：Eth-Trunk接口中只能添加GE接口、XGE接口,删除Eth-Trunk时，Eth-Trunk中不能有成员接口
