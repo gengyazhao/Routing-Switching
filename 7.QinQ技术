@@ -1,0 +1,65 @@
+QinQ 也称“双层 VLAN”或 Stacked VLAN。它在用户报文原有的内层 VLAN 标签 (C-VLAN) 之外，再封装一个外层 VLAN 标签 (S-VLAN)。来自不同用户的报文，即使内层 VLAN 有冲突，也会因为外层 VLAN 不同而彼此隔离。
+传统 802.1Q 只支持约 4094 个 VLAN，在运营商网络中不够用。QinQ 把 VLAN 扩展到了 4094×4094，实现了用户 VLAN 在运营商网络中的透明传输。
+
+典型应用场景：城域网以太网、企业VPN、数据中心多租户环境，以及楼道交换机到汇聚层的上行链路。
+C-VLAN (Customer VLAN)：用户私网中的原始 VLAN Tag，通常是 802.1Q。
+S-VLAN (Service VLAN)：运营商网络添加的外层 Tag，用于在骨干网中转发。
+TPID (Tag Protocol Identifier)：标签协议标识符，标准是 0x8100 (802.1Q)。QinQ 外层常用 0x88a8 (802.1ad)，但为了兼容旧设备，有时也改写为 0x8100。
+
+1： QinQ 的工作原理，它和普通的 Dot1q 有什么本质区别？
+普通 Dot1q 只在报文头部添加一层 VLAN Tag。
+而 QinQ 添加了两层：内层是用户私网 Tag (C-VLAN)，外层是运营商网络 Tag (S-VLAN)。运营商网络只根据外层 S-VLAN 转发报文，用户的私网 VLAN 信息在运营商的传输过程中得到完全保留。
+两者本质区别在于，Dot1q 只能单层隔离，而 QinQ 实现了双层隔离和隧道化。
+
+2：QinQ 分为几种类型？它们的区别是什么？
+主要分为两种：基础QinQ和灵活QinQ
+基础QinQ：基于端口配置。端口收到带 Tag 的报文时，统一加上一个固定的外层 Tag。配置简单，但不够灵活。
+灵活QinQ：基于报文的内层 VLAN 信息来决策。可以根据内层 C-VLAN ID、优先级等条件，有选择地添加不同的外层 Tag。比如，将用户 A 的 VLAN 10 映射到 S-VLAN 100，VLAN 20 映射到 S-VLAN 200。
+灵活 QinQ 能更精细地管理业务
+
+3：网络中 MTU 通常是 1500 字节，QinQ 会增加 4 个字节的头部，如何解决报文过大导致无法转发的问题？
+最简单可靠的方法是在所有中间交换机的端口上统一设置 mtu 1522 或更高。
+启用Jumbo Frame：如果设备硬件不支持 MTU 修改，或报文更大，需要交换机支持并开启巨帧功能。
+路径MTU发现 (PMTUD)：在承载IP业务时，可以利用 PMTUD 让源端主动发送较小报文。或在网络边缘设备启用 TCP MSS 调整（更常用的方法）。
+
+4：请解释一下 TPID 的作用。在 QinQ 中，外层 TPID 为什么有时要设置为 0x8100 而不是标准的 0x88a8？
+TPID 用于识别协议类型。标准 802.1Q 是 0x8100，标准 802.1ad (QinQ) 外层是 0x88a8。将外层 TPID 设置为 0x8100 主要是为了兼容性。
+一些老旧的交换机、网卡或分析仪不能识别 0x88a8，会直接丢弃报文。把它们错当成标准 802.1Q 处理，可以让报文在网络中顺利通过。这在混合厂商设备的网络中特别常见。
+
+CE1及CE2两台交换机都部署了VLAN10。
+两台交换机分别接入了SW1及SW2。SW1及SW2是两台公网交换机，且连接着其他设备，
+为了保证CE1及CE2能够在VLAN10中实现二层通信，而且不与其他设备产生冲突，公网为该业务分配了外层VLAN160。 
+在SW1及SW2上部署QinQ使得CE1能够访问CE2。图中的交换机以S5700 V2R1C00版本为例。
+SW1的配置如下： 
+vlan batch 160 
+interface GigabitEthernet0/0/1   port link-type dot1q-tunnel port default vlan 160 
+interface GigabitEthernet0/0/24   description Link to SW2   
+port link-type trunk   
+port trunk allow-pass vlan 160   qinq protocol 8100    #缺省情况下，外层VLAN Tag的TPID值为0x8100  	
+
+SW2的配置如下： 
+vlan batch 160 
+interface GigabitEthernet0/0/1   
+port link-type dot1q-tunnel   
+port default vlan 160 interface 
+GigabitEthernet0/0/24   
+description Link to SW1   
+port link-type trunk 
+port trunk allow-pass vlan 160 
+qinq protocol 8100   	 	 	 	#缺省情况下，外层VLAN Tag的TPID值为0x8100  
+
+CE1的配置如下： 
+vlan batch 10 
+interface GigabitEthernet0/0/24  port link-type trunk  
+port trunk allow-pass vlan 10 
+interface Vlanif10   
+ip address 10.1.1.1 255.255.255.0 
+
+CE2的配置如下： 
+vlan batch 10 
+interface GigabitEthernet0/0/24   
+port link-type trunk   
+port trunk allow-pass vlan 10 
+interface Vlanif10 
+ ip address 10.1.1.2 255.255.255.0 
+完成上述配置后，从CE1即可ping通10.1.1.2
