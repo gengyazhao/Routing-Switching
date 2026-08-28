@@ -1,0 +1,37 @@
+VPN两个特点：专用性、虚拟性
+L3隧道VPN：VPN工作层在网络层，GRE、IPSec
+L2隧道VPN：VPN工作层在网络层，L2TP、PPTP
+VPN常见技术：
+隧道技术、身份认证技术、数据加密技术、数据验证技术、秘钥管理技术
+GRE Generic Routing Encapsulation，简称GRE，
+
+
+R1配置：
+Int g0/0/0
+Ip add 10.1.12.1 24
+Int g0/0/1
+Ip add 192.168.1.254 24
+q
+Ip route-s 0.0.0.0 0 10.1.12.2 
+Int tunnel 0/0/0
+Tunnel-p gre
+Ip add 1.1.1.1 24
+Source g0/0/0
+Des 10.1.23.3
+q
+Ip route-s 192.168.2.0 24 tunnel 0/0/0
+
+R3配置：
+Int g0/0/0
+Ip add 10.1.23.3 24
+Int g0/0/1
+Ip add 192.168.2.254 24
+
+Ip route-s 0.0.0.0 0 10.1.23.2
+Int tunnel 0/0/0
+Tunnel-p gre
+Ip add 1.1.1.2 24
+Source g0/0/0
+Des 10.1.12.1
+Q
+Ip route-s 192.168.1.0 24 tunnel 0/0/0
